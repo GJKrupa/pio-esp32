@@ -27,8 +27,7 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo:
-        from_secret: docker_repo
+      repo: uxian/pio-esp32
       tags:
         - linux-arm64
         - "${DRONE_TAG}-linux-arm64"
@@ -65,8 +64,7 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo:
-        from_secret: docker_repo
+      repo: uxian/pio-esp32
       tags:
         - linux-amd64
         - "${DRONE_TAG}-linux-amd64"
@@ -89,18 +87,14 @@ platform:
   arch: amd64
   os: linux
 
-environment:
-  DOCKER_REPO:
-    from_secret: docker_repo
-
 steps:
   - name: manifest-tag
     image: plugins/manifest
     settings:
       auto_tag: "true"
       ignore_missing: "true"
-      target: "${DOCKER_REPO}:${DRONE_TAG}"
-      template: "${DOCKER_REPO}:${DRONE_TAG}-OS-ARCH"
+      target: "uxian/pio-esp32:${DRONE_TAG}"
+      template: "uxian/pio-esp32:${DRONE_TAG}-OS-ARCH"
       username:
         from_secret: docker_username
       password:
@@ -117,8 +111,8 @@ steps:
     settings:
       auto_tag: "true"
       ignore_missing: "true"
-      target: "${DOCKER_REPO}:latest"
-      template: "${DOCKER_REPO}:OS-ARCH"
+      target: "uxian/pio-esp32:latest"
+      template: "uxian/pio-esp32:OS-ARCH"
       username:
         from_secret: docker_username
       password:
