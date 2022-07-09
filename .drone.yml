@@ -89,12 +89,13 @@ platform:
   arch: amd64
   os: linux
 
+environment:
+  DOCKER_REPO:
+    from_secret: docker_repo
+
 steps:
   - name: manifest-tag
     image: plugins/manifest
-    environment:
-      DOCKER_REPO:
-        from_secret: docker_repo
     settings:
       auto_tag: "true"
       ignore_missing: "true"
@@ -113,9 +114,6 @@ steps:
 
   - name: manifest-latest
     image: plugins/manifest
-    environment:
-      DOCKER_REPO:
-        from_secret: docker_repo
     settings:
       auto_tag: "true"
       ignore_missing: "true"
