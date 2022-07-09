@@ -36,6 +36,12 @@ steps:
       event:
         - tag
 
+trigger:
+  ref:
+    include:
+    - refs/pull/**
+    - refs/tags/**
+
 ---
 kind: pipeline
 type: docker
@@ -73,23 +79,6 @@ steps:
     when:
       event:
         - tag
-
-trigger:
-  ref:
-    include:
-    - refs/pull/**
-    - refs/tags/**
-
----
-kind: pipeline
-type: docker
-name: build-all
-
-steps: []
-
-depends_on:
-- linux-amd64
-- linux-arm64
 
 trigger:
   ref:
