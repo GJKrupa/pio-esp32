@@ -1,23 +1,26 @@
 ---
 kind: pipeline
 type: docker
-name: branch-build
+name: linux-arm64
+
+platform:
+  arch: arm64
+  os: linux
 
 steps:
   - name: docker-build
-    image: docker:dind
-    volumes:
-    - name: dockersock
-      path: /var/run
-    commands:
-    - sleep 5 # give docker enough time to start
-    - docker build -t test .
+    image: plugins/docker
+    settings:
+      repo: test
+      dry_run: true
+      tags:
+        - ${DRONE_COMMIT_SHA}
     when:
       ref:
         include:
         - refs/pull/**
   
-  - name: docker-tag-build
+  - name: docker-build-tag
     image: plugins/docker
     settings:
       username:
@@ -33,17 +36,60 @@ steps:
       event:
         - tag
 
-services:
-- name: dind
-  image: docker:dind
-  privileged: true
-  volumes:
-  - name: dockersock
-    path: /var/run
+---
+kind: pipeline
+type: docker
+name: linux-amd64
 
-volumes:
-- name: dockersock
-  temp: {}
+platform:
+  arch: amd64
+  os: linux
+
+steps: 
+  - name: docker-build
+    image: plugins/docker
+    settings:
+      repo: test
+      dry_run: true
+      tags:
+        - ${DRONE_COMMIT_SHA}
+    when:
+      ref:
+        include:
+        - refs/pull/**
+  
+  - name: docker-build-tag
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo:
+        from_secret: docker_repo
+      tags:
+        - latest
+        - "${DRONE_TAG}"
+    when:
+      event:
+        - tag
+
+trigger:
+  ref:
+    include:
+    - refs/pull/**
+    - refs/tags/**
+
+---
+kind: pipeline
+type: docker
+name: build-all
+
+steps: []
+
+depends_on:
+- linux-amd64
+- linux-arm64
 
 trigger:
   ref:
