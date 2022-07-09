@@ -35,6 +35,12 @@ steps:
       event:
         - tag
 
+trigger:
+  ref:
+    include:
+    - refs/pull/**
+    - refs/tags/**
+
 ---
 kind: pipeline
 type: docker
